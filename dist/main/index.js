@@ -26914,11 +26914,6 @@ exports.run = void 0;
 const core_1 = __nccwpck_require__(2186);
 const exec_1 = __nccwpck_require__(1514);
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
-async function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
-}
 const githubWorkspace = process.env.GITHUB_WORKSPACE
     ? process.env.GITHUB_WORKSPACE
     : '';
@@ -26947,10 +26942,12 @@ async function run() {
         // const policyUrl: string = core.getInput('policyUrl')
         (0, core_1.info)('Starting Tetragon Action');
         await (0, exec_1.exec)(`docker run --name tetragon -d --rm --pull always --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
-        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact >> ${githubWorkspace}/tetragon`);
-        (0, core_1.info)('Tetraon Profiling started');
+        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact >> ${githubWorkspace}/tetraevents`, [], {
+            silent: true,
+            delay: launchDelayTime * 1000
+        });
         (0, core_1.info)(`Waiting ${launchDelayTime} seconds ...`);
-        await sleep(launchDelayTime * 1000);
+        (0, core_1.info)('Tetraon Profiling started');
     }
     catch (error) {
         if (error instanceof Error)

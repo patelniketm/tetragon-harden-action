@@ -2,12 +2,6 @@ import { info, getInput, setFailed } from '@actions/core'
 import { exec } from '@actions/exec'
 import path from 'node:path'
 
-async function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => {
-    setTimeout(resolve, ms)
-  })
-}
-
 const githubWorkspace: string = process.env.GITHUB_WORKSPACE
   ? process.env.GITHUB_WORKSPACE
   : ''
@@ -49,12 +43,15 @@ export async function run(): Promise<void> {
       `docker run --name tetragon -d --rm --pull always --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
     )
     await exec(
-      `docker exec tetragon tetra getevents -o compact >> ${githubWorkspace}/tetragon`
+      `docker exec tetragon tetra getevents -o compact >> ${githubWorkspace}/tetraevents`,
+      [],
+      {
+        silent: true,
+        delay: launchDelayTime * 1000
+      }
     )
-    info('Tetraon Profiling started')
-
     info(`Waiting ${launchDelayTime} seconds ...`)
-    await sleep(launchDelayTime * 1000)
+    info('Tetraon Profiling started')
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }
