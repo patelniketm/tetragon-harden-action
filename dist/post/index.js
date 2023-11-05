@@ -27231,7 +27231,10 @@ function processLine(lineContent) {
 }
 async function run() {
     try {
-        const tetragonLogFile = '/tmp/tetragon';
+        const githubWorkspace = process.env.GITHUB_WORKSPACE
+            ? process.env.GITHUB_WORKSPACE
+            : '';
+        const tetragonLogFile = `${githubWorkspace}/tetragon`;
         (0, core_1.info)(`Reading file ${tetragonLogFile}`);
         const fileContent = (0, node_fs_1.readFileSync)(tetragonLogFile, 'utf8');
         for (const line of fileContent.split(/\r?\n/)) {

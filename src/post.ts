@@ -41,7 +41,10 @@ function processLine(lineContent: string): void {
 
 export async function run(): Promise<void> {
   try {
-    const tetragonLogFile = '/tmp/tetragon'
+    const githubWorkspace: string = process.env.GITHUB_WORKSPACE
+      ? process.env.GITHUB_WORKSPACE
+      : ''
+    const tetragonLogFile = `${githubWorkspace}/tetragon`
 
     info(`Reading file ${tetragonLogFile}`)
     const fileContent = readFileSync(tetragonLogFile, 'utf8')
