@@ -26923,6 +26923,9 @@ const actionRepo = process.env.GITHUB_ACTION_REPOSITORY
 const actionRef = process.env.GITHUB_ACTION_REF
     ? process.env.GITHUB_ACTION_REF
     : '';
+const runnerTempPath = process.env.RUNNER_TEMP
+    ? process.env.RUNNER_TEMP
+    : '';
 function getPolicyPath() {
     (0, core_1.info)(`GITHUB_WORKSPACE - ${githubWorkspace}`);
     (0, core_1.info)(`GITHUB_ACTION_REPOSITORY - ${actionRepo}`);
@@ -26942,10 +26945,7 @@ async function run() {
         // const policyUrl: string = core.getInput('policyUrl')
         (0, core_1.info)('Starting Tetragon Action');
         await (0, exec_1.exec)(`docker run --name tetragon -d --rm --pull always --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
-        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact >> ${githubWorkspace}/tetraevents`, [], {
-            silent: true,
-            delay: launchDelayTime * 1000
-        });
+        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`);
         (0, core_1.info)(`Waiting ${launchDelayTime} seconds ...`);
         (0, core_1.info)('Tetraon Profiling started');
     }
