@@ -1,0 +1,41 @@
+{
+    "name": "tetragon-harden-action",
+    "description": "Tetragon based GitHub Action to harden your pipeline",
+    "version": "0.0.0",
+    "main": "index.js",
+    "private": true,
+    "repository": "git@github.com:patelniketm/tetragon-harden-action.git",
+    "author": "Niket Patel<patelniket@gmail.com>",
+    "license": "MIT",
+    "engines": {
+        "node": ">=20"
+    },
+    "keywords": [
+        "actions",
+        "tetragon"
+    ],
+    "dependencies": {
+        "@actions/core": "^1.10.1",
+        "@actions/exec": "^1.1.1"
+    },
+    "devDependencies": {
+        "@types/node": "^20.8.10",
+        "@typescript-eslint/eslint-plugin": "^6.9.1",
+        "@vercel/ncc": "^0.38.1",
+        "eslint-plugin-github": "^4.10.1",
+        "eslint-plugin-jest": "^27.6.0",
+        "typescript": "^5.2.2"
+    },
+    "scripts": {
+        "lint": "npx eslint . -c .eslintrc.json",
+        "fixlint": "npx eslint . -c .eslintrc.json --fix",
+        "build": "npm run build:main && npm run build:post",
+        "build:main": "ncc build src/main.ts --out dist/main --license LICENSE",
+        "build:post": "ncc build src/post.ts --out dist/post --license LICENSE",
+        "watch": "npm run watch:main && npm run watch:post",
+        "watch:main": "ncc build src/main.ts --out dist/main --watch",
+        "watch:post": "ncc build src/post.ts --out dist/post --watch",
+        "format:prettier": "prettier --write **/*.ts",
+        "format:check": "prettier --check **/*.ts"
+    }
+}

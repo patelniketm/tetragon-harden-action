@@ -1,0 +1,18 @@
+name: Main Verify
+on:
+  push:
+    branches:
+      - main 
+permissions:
+  contents: read
+jobs:
+  hardenprocess:
+    runs-on: [ubuntu-latest]
+    steps:    
+      - name: Start Tetragon Scan
+        uses: patelniketm/tetragon-harden-action@main
+    
+      - name: Run Task
+        run: |
+          wget https://www.google.com
+          echo "Hello" >> test.txt

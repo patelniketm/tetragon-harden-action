@@ -1,0 +1,21 @@
+name: Tetragon Harden Action
+description: Protect your GitHub Actions pipelines with Tetragon eBPF profiling
+author: 'Niket Patel<patelniket@gmail.com>'
+inputs:
+  launchDelayTime:
+    description: Delay in between launch of profiling tool and start of pipeline in seconds to accomodate all events capture
+    default: '3'
+    required: false  
+  imageRegistry:
+    description: Image Registry to pull image, oveerride to use internal private image registry
+    default: 'quay.io'
+    required: false
+  tetragonImageTag:
+    description: Tetragon Image Version - quay.io/cilium/tetragon-ci, override to use specific version
+    default: 'latest'
+    required: false  
+runs:
+  using: node20
+  main: dist/main/index.js
+  post: dist/post/index.js
+

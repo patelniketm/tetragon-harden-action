@@ -1,0 +1,22 @@
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea
+.vscode
+*.code-workspace
+
+# Ignore built ts files
+__tests__/runner/*
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Dependency directory
+node_modules
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
