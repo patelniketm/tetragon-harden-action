@@ -2,7 +2,7 @@
 apiVersion: cilium.io/v1alpha1
 kind: TracingPolicy
 metadata:
-  name: "monitor-network-activity-outside-cluster-cidr-range"
+  name: "tcp-connect-local"
 spec:
   kprobes:
   - call: "tcp_connect"

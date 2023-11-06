@@ -19,14 +19,24 @@ export async function run(): Promise<void> {
     const launchDelayTime: number = parseInt(getInput('launchDelayTime'), 10)
     const imageRegistry: string = getInput('imageRegistry')
     const tetragonImageTag: string = getInput('tetragonImageTag')
-
-    const policyPath = getPolicyPath()
-    // const policyUrl: string = core.getInput('policyUrl')
+    const tetragonPolicy: string = getInput('tetragonPolicy')
+    const tetragonPolicyUrl: string = getInput('tetragonPolicyUrl')
 
     info('Starting Tetragon Action')
-    await exec(
-      `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
-    )
+    if (tetragonPolicy) {
+      const policyPath = getPolicyPath()
+      info(`Not yet implemented - Tetragon Policy Path - ${policyPath}`)
+      await exec(
+        `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/${tetragonPolicy}:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
+      )
+    } else if (tetragonPolicyUrl) {
+      info(`Not yet implemented - Tetragon Policy Path - ${tetragonPolicyUrl}`)    
+    } else {
+      await exec(
+        `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag}`
+      )
+    }
+
     await exec(
       `docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`
     )
