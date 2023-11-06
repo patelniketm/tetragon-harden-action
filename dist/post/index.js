@@ -27240,8 +27240,8 @@ async function run() {
         for (const line of fileContent.split(/\r?\n/)) {
             processLine(line);
         }
-        (0, core_1.info)('Killing tetragon docker');
-        await (0, exec_1.exec)('docker kill tetragon');
+        (0, core_1.info)('Killing tetragon-container docker');
+        await (0, exec_1.exec)('docker kill tetragon-container');
     }
     catch (error) {
         if (error instanceof Error)

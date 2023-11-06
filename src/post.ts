@@ -52,8 +52,8 @@ export async function run(): Promise<void> {
       processLine(line)
     }
 
-    info('Killing tetragon docker')
-    await exec('docker kill tetragon')
+    info('Killing tetragon-container docker')
+    await exec('docker kill tetragon-container')
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }

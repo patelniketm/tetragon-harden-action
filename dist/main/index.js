@@ -26944,10 +26944,9 @@ async function run() {
         const policyPath = getPolicyPath();
         // const policyUrl: string = core.getInput('policyUrl')
         (0, core_1.info)('Starting Tetragon Action');
-        await (0, exec_1.exec)(`docker run --name tetragon -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
-        await (0, exec_1.exec)(`docker ps`);
-        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact`);
-        await (0, exec_1.exec)(`docker exec tetragon tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`);
+        await (0, exec_1.exec)(`docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
+        await (0, exec_1.exec)(`docker logs tetragon-container`);
+        await (0, exec_1.exec)(`docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`);
         (0, core_1.info)(`Waiting ${launchDelayTime} seconds ...`);
         (0, core_1.info)('Tetraon Profiling started');
     }

@@ -43,12 +43,11 @@ export async function run(): Promise<void> {
 
     info('Starting Tetragon Action')
     await exec(
-      `docker run --name tetragon -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
+      `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
     )
-    await exec(`docker ps`)
-    await exec(`docker exec tetragon tetra getevents -o compact`)
+    await exec(`docker logs tetragon-container`)
     await exec(
-      `docker exec tetragon tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`
+      `docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`
     )
     info(`Waiting ${launchDelayTime} seconds ...`)
     info('Tetraon Profiling started')
