@@ -20,8 +20,6 @@ jobs:
       
       - name: Run Task
         run: |
-          ls -al $GITHUB_WORKSPACE/../../_actions/$GITHUB_ACTION_REPOSITORY/
-          ls -al $GITHUB_WORKSPACE/../../_actions/$GITHUB_ACTION_REPOSITORY/$GITHUB_ACTION_REF
           curl https://www.google.com
           echo "Hello" >> test.txt
       
