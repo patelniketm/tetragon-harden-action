@@ -22,5 +22,6 @@ jobs:
       
       - name: Cleanup
         run: |
+          sleep 2
           cat ${{runner.temp}}/tetraevents
           docker kill tetragon-container
