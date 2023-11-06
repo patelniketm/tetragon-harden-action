@@ -26914,47 +26914,40 @@ exports.run = void 0;
 const core_1 = __nccwpck_require__(2186);
 const exec_1 = __nccwpck_require__(1514);
 const node_path_1 = __importDefault(__nccwpck_require__(9411));
-async function sleep(ms) {
-    return new Promise(resolve => {
-        setTimeout(resolve, ms);
-    });
-}
+const actionPath = process.env.GITHUB_ACTION_PATH
+    ? process.env.GITHUB_ACTION_PATH
+    : '';
+const runnerTempPath = process.env.RUNNER_TEMP
+    ? process.env.RUNNER_TEMP
+    : '';
 function getPolicyPath() {
-    const githubActionPath = process.env.GITHUB_ACTION_PATH
-        ? process.env.GITHUB_ACTION_PATH
-        : '';
-    const githubWorkspace = process.env.GITHUB_WORKSPACE
-        ? process.env.GITHUB_WORKSPACE
-        : '';
-    const actionRepo = process.env.GITHUB_ACTION_REPOSITORY
-        ? process.env.GITHUB_ACTION_REPOSITORY
-        : '';
-    const actionRef = process.env.GITHUB_ACTION_REF
-        ? process.env.GITHUB_ACTION_REF
-        : '';
-    (0, core_1.info)(`GITHUB_ACTION_PATH - ${githubActionPath}`);
-    (0, core_1.info)(`GITHUB_WORKSPACE - ${githubWorkspace}`);
-    (0, core_1.info)(`GITHUB_ACTION_REPOSITORY - ${actionRepo}`);
-    (0, core_1.info)(`GITHUB_ACTION_REF - ${actionRef}`);
-    const pathToAction = node_path_1.default.join(githubWorkspace, 
-    // '..',
-    '..', '_actions', actionRepo, actionRef);
-    (0, core_1.info)(`PATH - ${pathToAction}`);
-    return node_path_1.default.resolve(pathToAction, 'policy');
+    (0, core_1.info)(`GITHUB_ACTION_PATH - ${actionPath}`);
+    return node_path_1.default.resolve(actionPath, 'policy');
 }
 async function run() {
     try {
         const launchDelayTime = parseInt((0, core_1.getInput)('launchDelayTime'), 10);
         const imageRegistry = (0, core_1.getInput)('imageRegistry');
         const tetragonImageTag = (0, core_1.getInput)('tetragonImageTag');
-        const policyPath = getPolicyPath();
-        // const policyUrl: string = core.getInput('policyUrl')
+        const tetragonPolicy = (0, core_1.getInput)('tetragonPolicy');
+        const tetragonPolicyUrl = (0, core_1.getInput)('tetragonPolicyUrl');
         (0, core_1.info)('Starting Tetragon Action');
-        await (0, exec_1.exec)(`docker run --name tetragon -d --rm --pull always --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/tcp-connect-custom.yaml:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
-        await (0, exec_1.exec)('docker exec tetragon tetra getevents -o compact >> /tmp/tetragon &');
-        (0, core_1.info)('Tetraon Profiling started');
+        if (tetragonPolicy) {
+            const policyPath = getPolicyPath();
+            (0, core_1.info)(`Not yet implemented - Tetragon Policy Path - ${policyPath}`);
+            await (0, exec_1.exec)(`docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/${tetragonPolicy}:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`);
+        }
+        else if (tetragonPolicyUrl) {
+            (0, core_1.info)(`Not yet implemented - Tetragon Policy Path - ${tetragonPolicyUrl}`);
+        }
+        else {
+            await (0, exec_1.exec)(`docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag}`);
+        }
+        await (0, exec_1.exec)(`docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`, [], {
+            silent: true
+        });
         (0, core_1.info)(`Waiting ${launchDelayTime} seconds ...`);
-        await sleep(launchDelayTime * 1000);
+        (0, core_1.info)('Tetraon Profiling started');
     }
     catch (error) {
         if (error instanceof Error)

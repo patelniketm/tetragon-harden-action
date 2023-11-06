@@ -41,7 +41,10 @@ function processLine(lineContent: string): void {
 
 export async function run(): Promise<void> {
   try {
-    const tetragonLogFile = '/tmp/tetragon'
+    const runnerTempPath: string = process.env.RUNNER_TEMP
+      ? process.env.RUNNER_TEMP
+      : ''
+    const tetragonLogFile = `${runnerTempPath}/tetraevents`
 
     info(`Reading file ${tetragonLogFile}`)
     const fileContent = readFileSync(tetragonLogFile, 'utf8')
@@ -49,8 +52,8 @@ export async function run(): Promise<void> {
       processLine(line)
     }
 
-    info('Killing tetragon docker')
-    await exec('docker kill tetragon')
+    info('Killing tetragon-container docker')
+    await exec('docker kill tetragon-container')
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }

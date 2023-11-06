@@ -13,9 +13,14 @@ inputs:
   tetragonImageTag:
     description: Tetragon Image Version - quay.io/cilium/tetragon-ci, override to use specific version
     default: 'latest'
-    required: false  
+    required: false
+  tetragonPolicy:
+    description: Tetragon Local Policy Path - Override either tetragonPolicy or tetragonPolicyUrl
+    required: false
+  tetragonPolicyUrl:
+    description: Tetragon HTTPS Policy URL - Override either tetragonPolicy or tetragonPolicyUrl
+    required: false
 runs:
   using: node20
   main: dist/main/index.js
   post: dist/post/index.js
-
