@@ -26943,7 +26943,9 @@ async function run() {
         else {
             await (0, exec_1.exec)(`docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag}`);
         }
-        await (0, exec_1.exec)(`docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`);
+        await (0, exec_1.exec)(`docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`, [], {
+            silent: true
+        });
         (0, core_1.info)(`Waiting ${launchDelayTime} seconds ...`);
         (0, core_1.info)('Tetraon Profiling started');
     }

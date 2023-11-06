@@ -30,7 +30,7 @@ export async function run(): Promise<void> {
         `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${policyPath}/${tetragonPolicy}:/tracing_policy.yaml ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag} --tracing-policy tracing_policy.yaml`
       )
     } else if (tetragonPolicyUrl) {
-      info(`Not yet implemented - Tetragon Policy Path - ${tetragonPolicyUrl}`)    
+      info(`Not yet implemented - Tetragon Policy Path - ${tetragonPolicyUrl}`)
     } else {
       await exec(
         `docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf ${imageRegistry}/cilium/tetragon-ci:${tetragonImageTag}`
@@ -38,7 +38,11 @@ export async function run(): Promise<void> {
     }
 
     await exec(
-      `docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`
+      `docker exec tetragon-container tetra getevents -o compact >> ${runnerTempPath}/tetraevents &`,
+      [],
+      {
+        silent: true
+      }
     )
     info(`Waiting ${launchDelayTime} seconds ...`)
     info('Tetraon Profiling started')
