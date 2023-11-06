@@ -9,14 +9,22 @@ jobs:
   hardenprocess:
     runs-on: [ubuntu-latest]
     steps:
-      - name: Checkout codebase
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
+      # - name: Checkout codebase
+      #   uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
 
+      # - name: Start Tetragon Scan
+      #   uses: ./
+      
       - name: Start Tetragon Scan
-        uses: ./
-    
+        uses: patelniketm/tetragon-harden-action@verify
+      
       - name: Run Task
         run: |
+          ls -al
+          ls -al $GITHUB_WORKSPACE
+          ls -al $GITHUB_ACTION_REPOSITORY          
+          ls -al $GITHUB_WORKSPACE/../_actions
+          ls -al $GITHUB_WORKSPACE/_actions
           curl https://www.google.com
           echo "Hello" >> test.txt
       

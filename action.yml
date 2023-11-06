@@ -19,10 +19,7 @@ runs:
   steps:
     - shell: bash
       run: |
-        set -o
         docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf quay.io/cilium/tetragon-ci:latest
-        docker ps
         docker exec tetragon-container tetra getevents -o compact >> ${{runner.temp}}/tetraevents &
-        docker ps
         sleep 5
 
