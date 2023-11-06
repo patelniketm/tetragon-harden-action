@@ -22,7 +22,7 @@ function getPolicyPath(): string {
 
   const pathToAction = path.join(
     githubWorkspace,
-    // '..',
+    '..',
     '..',
     '_actions',
     actionRepo,
