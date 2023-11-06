@@ -19,11 +19,7 @@ runs:
   steps:
     - shell: bash
       run: |
-        docker run --name tetragon -d --pull always \
-        --pid=host --cgroupns=host --privileged \
-        -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf \
-        -v ${{github.action_path}}/policy/tcp-connect-custom.yaml:/tracing_policy.yaml \
-        quay.io/cilium/tetragon-ci:latest --tracing-policy tracing_policy.yaml        
-        docker exec tetragon tetra getevents -o compact >> ${{runner.temp}}/tetragon &
+        docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf -v ${{github.workspace}}/../_actions/tcp-connect-custom.yaml:/tracing_policy.yaml quay.io/cilium/tetragon-ci:latest --tracing-policy tracing_policy.yaml   
+        docker exec tetragon tetra getevents -o compact
         sleep 2
 
