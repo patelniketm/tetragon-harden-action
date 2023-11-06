@@ -10,12 +10,7 @@ jobs:
     runs-on: [ubuntu-latest]
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1  
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: .nvmrc
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 #v4.1.1
 
       - name: Start Tetragon Scan
         uses: ./
@@ -24,3 +19,8 @@ jobs:
         run: |
           curl https://www.google.com
           echo "Hello" >> test.txt
+      
+      - name: Cleanup
+        run: |
+          cat ${{runner.temp}}/tetraevents
+          docker kill tetragon-container
