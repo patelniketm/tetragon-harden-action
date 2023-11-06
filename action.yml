@@ -19,10 +19,8 @@ runs:
   steps:
     - shell: bash
       run: |
-        echo $GITHUB_ACTION_REPOSITORY
-        echo $GITHUB_ACTION_REF
-        ls -al $GITHUB_WORKSPACE/../../_actions/$GITHUB_ACTION_REPOSITORY/
-        ls -al $GITHUB_WORKSPACE/../../_actions/$GITHUB_ACTION_REPOSITORY/$GITHUB_ACTION_REF          
+        echo $$GITHUB_ACTION_PATH
+        ls -al $GITHUB_ACTION_PATH
         docker run --name tetragon-container -d --rm --pid=host --cgroupns=host --privileged -v /sys/kernel/btf/vmlinux:/var/lib/tetragon/btf quay.io/cilium/tetragon-ci:latest
         docker exec tetragon-container tetra getevents -o compact >> ${{runner.temp}}/tetraevents &
         sleep 5
