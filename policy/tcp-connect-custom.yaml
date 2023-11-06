@@ -1,44 +1,20 @@
+# For more information see: https://docs.isovalent.com/user-guide/sec-ops-visibility/workload-identity/index.html#egress-flow-to-suspicious-external-ip
 apiVersion: cilium.io/v1alpha1
 kind: TracingPolicy
 metadata:
-  name: "connect"
+  name: "monitor-network-activity-outside-cluster-cidr-range"
 spec:
   kprobes:
-    - call: "tcp_connect"
-      syscall: false
-      args:
-        - index: 0
-          type: "sock"
-      selectors:
-        - matchArgs:
-            - index: 0
-              operator: "NotDAddr"
-              values:
-                - "127.0.0.1/8"
-                - "192.168.0.0/16"
-    - call: "tcp_close"
-      syscall: false
-      args:
-        - index: 0
-          type: "sock"
-      selectors:
-        - matchArgs:
-            - index: 0
-              operator: "NotDAddr"
-              values:
-                - "127.0.0.1/8"
-                - "192.168.0.0/16"
-    - call: "tcp_sendmsg"
-      syscall: false
-      args:
-        - index: 0
-          type: "sock"
-        - index: 2
-          type: int
-      selectors:
-        - matchArgs:
-            - index: 0
-              operator: "NotDAddr"
-              values:
-                - "127.0.0.1/8"
-                - "192.168.0.0/16"
+  - call: "tcp_connect"
+    syscall: false
+    args:
+    - index: 0
+      type: "sock"
+    selectors:
+    - matchArgs:
+      - index: 0
+        operator: "NotDAddr"
+        values:
+        - 127.0.0.1
+        - "10.0.0.0/16"
+        - "192.168.0.0/16"
